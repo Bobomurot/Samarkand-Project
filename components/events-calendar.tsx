@@ -114,22 +114,6 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
     setIsEventDetailsOpen(true)
   }
 
-  // Registration handler
-  const handleRegistration = () => {
-    // Get the first event from current context
-    let eventToShow = null
-    
-    if (selectedDate) {
-      const dayEvents = getEventsForDay(selectedDate)
-      eventToShow = dayEvents.length > 0 ? dayEvents[0] : null
-    } else {
-      eventToShow = monthEvents.length > 0 ? monthEvents[0] : null
-    }
-    
-    setRegistrationEvent(eventToShow)
-    setIsRegistrationOpen(true)
-  }
-
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
@@ -531,6 +515,18 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                                     Xarita
                                   </a>
                                 </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  onClick={() => {
+                                    setRegistrationEvent(event)
+                                    setIsRegistrationOpen(true)
+                                  }}
+                                  className="text-xs h-8 hover:bg-green-50 hover:border-green-300 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:border-green-700 dark:hover:text-green-300 transition-colors"
+                                >
+                                  <UserPlus className="h-3 w-3 mr-1" />
+                                  Ro'yxat
+                                </Button>
                               </div>
                             </CardContent>
                           </div>
@@ -546,21 +542,6 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                     </div>
                     <p className="text-muted-foreground text-sm lg:text-base">Bu kunda tadbir yo'q</p>
                     <p className="text-xs text-muted-foreground/60 mt-2 lg:hidden">Yuqoriga scroll qiling</p>
-                  </div>
-                )}
-                {getEventsForDay(selectedDate).length > 0 && (
-                  <div className="mt-4">
-                    <Card 
-                      className="cursor-pointer hover:shadow-lg transition-all duration-300 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/30 hover:from-primary/20 hover:to-secondary/20 hover:border-primary/50"
-                      onClick={handleRegistration}
-                    >
-                      <CardContent className="p-3 sm:p-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <UserPlus className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
-                          <span className="text-sm lg:text-base font-medium">Ro'yxatdan o'tish</span>
-                        </div>
-                      </CardContent>
-                    </Card>
                   </div>
                 )}
               </div>
@@ -639,6 +620,18 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                                     Xarita
                                   </a>
                                 </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  onClick={() => {
+                                    setRegistrationEvent(event)
+                                    setIsRegistrationOpen(true)
+                                  }}
+                                  className="text-xs h-8 hover:bg-green-50 hover:border-green-300 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:border-green-700 dark:hover:text-green-300 transition-colors"
+                                >
+                                  <UserPlus className="h-3 w-3 mr-1" />
+                                  Ro'yxat
+                                </Button>
                               </div>
                             </CardContent>
                           </div>
@@ -654,21 +647,6 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                     </div>
                     <p className="text-muted-foreground text-sm lg:text-base">Bu oyda tadbir yo'q</p>
                     <p className="text-xs text-muted-foreground/60 mt-2 lg:hidden">Yuqoriga scroll qiling</p>
-                  </div>
-                )}
-                {monthEvents.length > 0 && (
-                  <div className="mt-4">
-                    <Card 
-                      className="cursor-pointer hover:shadow-lg transition-all duration-300 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/30 hover:from-primary/20 hover:to-secondary/20 hover:border-primary/50"
-                      onClick={handleRegistration}
-                    >
-                      <CardContent className="p-3 sm:p-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <UserPlus className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
-                          <span className="text-sm lg:text-base font-medium">Ro'yxatdan o'tish</span>
-                        </div>
-                      </CardContent>
-                    </Card>
                   </div>
                 )}
               </div>
@@ -701,10 +679,18 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                   <img 
                     src={selectedEvent.image} 
                     alt={selectedEvent.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-all duration-300 hover:scale-105"
+                    style={{
+                      imageRendering: 'auto',
+                      backfaceVisibility: 'hidden',
+                      transform: 'translateZ(0)',
+                      willChange: 'transform'
+                    }}
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
                     }}
+                    loading="eager"
+                    decoding="sync"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 text-white">
@@ -778,174 +764,237 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
 
       {/* Registration Modal */}
       <Dialog open={isRegistrationOpen} onOpenChange={setIsRegistrationOpen}>
-        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-center">
-              Ro'yxatdan o'ting
-            </DialogTitle>
-            <DialogDescription className="text-center">
-              Bepul hisob yarating va maxsus takliflardan foydalaning
-            </DialogDescription>
-          </DialogHeader>
-          
-          {/* Event Image */}
-          {registrationEvent && (
-            <div className="relative h-32 w-full rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 mb-4">
-              <img 
-                src={registrationEvent.image} 
-                alt={registrationEvent.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-              <div className="absolute bottom-2 left-2 text-white">
-                <div className="text-sm font-medium">
-                  {registrationEvent.name}
+        <DialogContent className="w-[95vw] sm:w-[90vw] md:w-[85vw] lg:w-[80vw] max-w-none h-[65vh] max-h-[65vh] overflow-hidden p-0" style={{ width: '80vw', maxWidth: 'none', height: '65vh' }}>
+          <div className="flex h-full">
+            {/* Event Image Section - Left Side */}
+            {registrationEvent && (
+              <div className="w-full sm:w-[40%] md:w-[35%] bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
+                <div className="relative h-full w-full" style={{ 
+                  backgroundImage: `url(${registrationEvent?.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                }}>
+                  <img 
+                    src={registrationEvent.image} 
+                    alt={registrationEvent.name}
+                    className="w-full h-full object-cover object-center transition-all duration-300 hover:scale-105"
+                    style={{
+                      imageRendering: 'auto',
+                      backfaceVisibility: 'hidden',
+                      transform: 'translateZ(0)',
+                      willChange: 'transform'
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                    loading="eager"
+                    decoding="sync"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <div className="text-lg lg:text-xl font-bold mb-1">
+                      {registrationEvent.name}
+                    </div>
+                    <div className="text-sm lg:text-base opacity-90 mb-2">
+                      {format(new Date(registrationEvent.date), 'd MMMM yyyy', { locale: uz })}
+                    </div>
+                    <div className="flex items-center gap-1 lg:gap-2 text-sm lg:text-base">
+                      <MapPin className="h-4 w-4 lg:h-5 lg:w-5" />
+                      <span className="truncate">{registrationEvent.location}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-90">
-                  {format(new Date(registrationEvent.date), 'd MMMM yyyy', { locale: uz })}
+              </div>
+            )}
+            
+            {/* Right Side - Two Separate Windows */}
+            <div className="w-full sm:w-[60%] md:w-[65%] flex flex-col sm:flex-row">
+              {/* Event Details Window */}
+              {registrationEvent && (
+                <div className="w-full sm:w-1/2 p-3 sm:p-4 border-b sm:border-b-0 sm:border-r bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+                  <div className="h-full flex flex-col justify-center">
+                    <h3 className="text-2xl font-bold mb-6 text-center">Tadbir haqida</h3>
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <CalendarIcon className="h-6 w-6 text-primary flex-shrink-0" />
+                        <div>
+                          <div className="font-medium text-lg">Sana va vaqt</div>
+                          <div className="text-base text-muted-foreground">
+                            {format(new Date(registrationEvent.date), 'EEEE, d MMMM yyyy', { locale: uz })}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <MapPin className="h-6 w-6 text-primary flex-shrink-0" />
+                        <div>
+                          <div className="font-medium text-lg">Manzil</div>
+                          <div className="text-base text-muted-foreground">
+                            {registrationEvent.location}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-3">
+                        <div className="font-medium mb-4 text-lg">Tavsif</div>
+                        <p className="text-base text-muted-foreground leading-relaxed">
+                          {registrationEvent.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Registration Form Window */}
+              <div className="w-full sm:w-1/2 p-3 sm:p-4 overflow-y-auto">
+                <DialogHeader className="mb-6">
+                  <DialogTitle className="text-2xl font-bold text-center">
+                    Ro'yxatdan o'ting
+                  </DialogTitle>
+                  <DialogDescription className="text-center text-sm">
+                    Bepul hisob yarating va maxsus takliflardan foydalaning
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="calendar-fullName" className="text-sm font-medium">
+                      To'liq ism
+                    </Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="calendar-fullName"
+                        type="text"
+                        placeholder="Ismingizni kiriting"
+                        className="pl-10 h-12 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="calendar-email" className="text-sm font-medium">
+                      Email manzil
+                    </Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="calendar-email"
+                        type="email"
+                        placeholder="email@example.com"
+                        className="pl-10 h-12 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="calendar-phone" className="text-sm font-medium">
+                      Telefon raqam
+                    </Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="calendar-phone"
+                        type="tel"
+                        placeholder="+998 90 123 45 67"
+                        className="pl-10 h-12 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="calendar-password" className="text-sm font-medium">
+                      Parol
+                    </Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="calendar-password"
+                        type="password"
+                        placeholder="Kuchli parol yarating"
+                        className="pl-10 pr-10 h-12 text-sm"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="calendar-confirmPassword" className="text-sm font-medium">
+                      Parolni tasdiqlang
+                    </Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="calendar-confirmPassword"
+                        type="password"
+                        placeholder="Parolni qayta kiriting"
+                        className="pl-10 pr-10 h-12 text-sm"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 pt-2">
+                    <input
+                      id="calendar-terms"
+                      type="checkbox"
+                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                    />
+                    <Label htmlFor="calendar-terms" className="text-sm text-muted-foreground">
+                      <a href="#" className="text-primary hover:underline">
+                        Foydalanish shartlari
+                      </a>{" "}
+                      va{" "}
+                      <a href="#" className="text-primary hover:underline">
+                        Maxfiylik siyosati
+                      </a>{" "}
+                      bilan roziman
+                    </Label>
+                  </div>
+
+                  <Button className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl mt-6">
+                    Ro'yxatdan o'tish
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-border/50" />
+                    </div>
+                    <div className="relative flex justify-center text-sm uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">yoki</span>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2 w-full">
+                    <Button variant="outline" className="flex-1 h-12 text-sm">
+                      <Facebook className="h-4 w-4 mr-2" />
+                      Facebook
+                    </Button>
+                    <Button variant="outline" className="flex-1 h-12 text-sm">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Telegram
+                    </Button>
+                  </div>
+
+                  <p className="text-center text-sm text-muted-foreground">
+                    Allaqachon hisobingiz bormi?{" "}
+                    <a href="#" className="text-primary hover:underline font-medium">
+                      Kirish
+                    </a>
+                  </p>
                 </div>
               </div>
             </div>
-          )}
-          <div className="space-y-4 pt-4">
-            <div className="space-y-2">
-              <Label htmlFor="calendar-fullName" className="text-sm font-medium">
-                To'liq ism
-              </Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="calendar-fullName"
-                  type="text"
-                  placeholder="Ismingizni kiriting"
-                  className="pl-10 h-12"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="calendar-email" className="text-sm font-medium">
-                Email manzil
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="calendar-email"
-                  type="email"
-                  placeholder="email@example.com"
-                  className="pl-10 h-12"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="calendar-phone" className="text-sm font-medium">
-                Telefon raqam
-              </Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="calendar-phone"
-                  type="tel"
-                  placeholder="+998 90 123 45 67"
-                  className="pl-10 h-12"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="calendar-password" className="text-sm font-medium">
-                Parol
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="calendar-password"
-                  type="password"
-                  placeholder="Kuchli parol yarating"
-                  className="pl-10 pr-10 h-12"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Eye className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="calendar-confirmPassword" className="text-sm font-medium">
-                Parolni tasdiqlang
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="calendar-confirmPassword"
-                  type="password"
-                  placeholder="Parolni qayta kiriting"
-                  className="pl-10 pr-10 h-12"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Eye className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2 pt-2">
-              <input
-                id="calendar-terms"
-                type="checkbox"
-                className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
-              />
-              <Label htmlFor="calendar-terms" className="text-sm text-muted-foreground">
-                <a href="#" className="text-primary hover:underline">
-                  Foydalanish shartlari
-                </a>{" "}
-                va{" "}
-                <a href="#" className="text-primary hover:underline">
-                  Maxfiylik siyosati
-                </a>{" "}
-                bilan roziman
-              </Label>
-            </div>
-
-            <Button className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl mt-6">
-              Ro'yxatdan o'tish
-            </Button>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border/50" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">yoki</span>
-              </div>
-            </div>
-
-            <div className="flex space-x-3 w-full">
-              <Button variant="outline" className="flex-1 h-12">
-                <Facebook className="h-5 w-5 mr-2" />
-                Facebook
-              </Button>
-              <Button variant="outline" className="flex-1 h-12">
-                <MessageCircle className="h-5 w-5 mr-2" />
-                Telegram
-              </Button>
-            </div>
-
-            <p className="text-center text-sm text-muted-foreground">
-              Allaqachon hisobingiz bormi?{" "}
-              <a href="#" className="text-primary hover:underline font-medium">
-                Kirish
-              </a>
-            </p>
           </div>
         </DialogContent>
       </Dialog>
