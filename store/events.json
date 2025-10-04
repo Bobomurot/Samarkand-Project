@@ -1,0 +1,83 @@
+[
+    {
+        "id": 1,
+        "date": "2025-09-01",
+        "name": "Uzbekistan's Independence Day",
+        "description": "Independence Day is a national holiday in Uzbekistan, celebrated on September 1st to commemorate the country's independence from the Soviet Union in 1991.",
+        "location": "Registon Square",
+        "image": "/events/independence-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 2,
+        "date": "2025-09-02",
+        "name": "Lola Festival",
+        "description": "Lola Festival is a national holiday in Uzbekistan, celebrated on September 2nd to commemorate the country's independence from the Soviet Union in 1991.",
+        "location": "Lola Square",
+        "image": "/events/lola-festival.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 3,
+        "date": "2025-10-01",
+        "name": "Teachers' Day",
+        "description": "Teachers' Day is celebrated annually on October 1st in Uzbekistan to honor educators and their contributions to society. Schools and universities organize special ceremonies and cultural programs.",
+        "location": "Tashkent State University",
+        "image": "/events/teachers-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 4,
+        "date": "2025-10-21",
+        "name": "Uzbek Language Day",
+        "description": "Uzbek Language Day celebrates the official language of Uzbekistan. This cultural event features poetry readings, literary competitions, and traditional music performances across the country.",
+        "location": "Alisher Navoi National Library",
+        "image": "/events/uzbek-language-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 5,
+        "date": "2025-12-08",
+        "name": "Constitution Day",
+        "description": "Constitution Day commemorates the adoption of Uzbekistan's constitution on November 1st, 1991. The day is marked with official ceremonies, cultural events, and public celebrations.",
+        "location": "Independence Square, Tashkent",
+        "image": "/events/constitution-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 6,
+        "date": "2025-11-18",
+        "name": "National Flag Day",
+        "description": "National Flag Day celebrates the adoption of Uzbekistan's national flag on November 18th, 1991. The day features flag-raising ceremonies, patriotic events, and cultural performances.",
+        "location": "Mustaqillik Square, Tashkent",
+        "image": "/events/flag-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 7,
+        "date": "2025-11-25",
+        "name": "Bukhara Silk and Spice Festival",
+        "description": "The Bukhara Silk and Spice Festival celebrates the city's rich history as a major stop on the Silk Road. Features traditional crafts, spice markets, and cultural performances in the historic old city.",
+        "location": "Poi Kalyan Complex, Bukhara",
+        "image": "/events/bukhara-festival.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 8,
+        "date": "2025-11-30",
+        "name": "Khiva Carpet Festival",
+        "description": "The Khiva Carpet Festival showcases traditional Uzbek carpet weaving techniques and patterns. Artisans demonstrate their skills while visitors can purchase authentic handmade carpets and textiles.",
+        "location": "Ichan Kala, Khiva",
+        "image": "/events/khiva-carpet-festival.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 9,
+        "date": "2025-12-15",
+        "name": "Samarqand Travel Guide Registration",
+        "description": "Join our exclusive community of travelers! Register now to get access to special offers, personalized recommendations, and insider tips for exploring Samarkand. Get notified about upcoming events and receive exclusive discounts on hotels and restaurants.",
+        "location": "Online Registration",
+        "image": "/events/teachers-day.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    }
+]
