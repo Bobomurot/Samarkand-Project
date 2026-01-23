@@ -79,5 +79,89 @@
         "location": "Online Registration",
         "image": "/events/teachers-day.png",
         "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
-    }
+    },
+    {
+        "id": 10,
+        "date": "2026-03-18",
+        "name": "Sharq taomlari festivali",
+        "description": "Join our exclusive community of travelers! Register now to get access to special offers, personalized recommendations, and insider tips for exploring Samarkand. Get notified about upcoming events and receive exclusive discounts on hotels and restaurants.",
+        "location": "Online Registration",
+        "image": "/events/Sharq_taomlari2.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    },
+    {
+        "id": 11,
+        "date": "2026-05-14",
+        "name": "Etno o‘yinlar festivali",
+        "description": "Etno o‘yinlar festivali – xalqning tarixiy merosi va jismoniy madaniyatini namoyish etishga qaratilgan yirik tadbir. Festival davomida tashrif buyuruvchilar xalqona bellashuvlar, jamoaviy o‘yinlar hamda milliy sport turlaridan bahramand bo‘ladilar. Qadimiy Samarqandning boy tarixiy va madaniy muhiti ushbu an’anaviy o‘yinlarga o‘ziga xos ruh bag‘ishlaydi. Festival milliy o‘zlikni anglash, jamoatchilik faolligini oshirish va an’anaviy sport turlariga bo‘lgan qiziqishni kuchaytirishga xizmat qiladi.",
+        "location": "Samarqand viloyati",
+        "image": "/events/Etno_oyinlar.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 12,
+        "date": "2026-05-28",
+        "name": "Ekstremal avto-moto shou",
+        "description": "Ekstremal avto-moto shou zamonaviy avtomobil va mototsikl sporti ishqibozlari uchun hayajonli tomosha hamda unutilmas taassurotlar taqdim etadi. Tadbir davomida professional haydovchilar murakkab trassalarda drift, akrobatik harakatlar va ekstremal manevrlarni namoyish etadilar. Ushbu shou avto-moto sportidagi yuqori mahoratni ko‘rsatish, avto-moto madaniyatini keng targ‘ib qilish, yoshlarni jismoniy faollikka undash va Samarqand shahar turizmini rivojlantirishga xizmat qiladi.",
+        "location": "Samarqand viloyati",
+        "image": "/events/Ekstrimal_moto.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 13,
+        "date": "2026-06-20",
+        "name": "Havo sharlari festivali",
+        "description": "Havo sharlari festivali turli shakl va rangdagi sharlarning havoga ko‘tarilishi orqali tashkil etiladigan madaniy-turistik tadbirdir. Festival doirasida uchish namoyishlari, havodagi spektakllar va interaktiv ko‘rgazmalar orqali tomoshabinlarga noyob vizual tajriba taqdim etiladi. Ushbu tadbir Samarqandning turizm salohiyatini oshirish, shaharning madaniy hayotini boyitish hamda oilaviy hordiq uchun qulay muhit yaratishga xizmat qiladi. Shuningdek, festival xalqaro mehmonlar uchun ham unutilmas taassurot va tajriba manbai bo‘ladi.",
+        "location": "Samarqand viloyati",
+        "image": "/events/Havo_Sharlar.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 14,
+        "date": "2026-07-18",
+        "name": "Sharq shirinliklari festivali",
+        "description": "Sharq shirinliklari festivali Sharq xalqlarining boy oshpazlik merosini namoyish etishga qaratilgan madaniy tadbirdir. Festival davomida turli milliy shirinliklar, ularning tayyorlanish sirlari va madaniy ahamiyati keng jamoatchilikka taqdim etiladi. Ishtirokchilar mazali taomlarni tatib ko‘rish imkoniyatiga ega bo‘ladilar. Tadbir Samarqandning madaniy hayotini boyitish, shaharning turizm salohiyatini oshirish hamda mahalliy va xorijiy mehmonlar uchun unutilmas taassurot yaratishga xizmat qiladi.",
+        "location": "Samarqand shahri",
+        "image": "/events/Shirinliklar.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 15,
+        "date": "2026-08-01",
+        "name": "Anjir festivali",
+        "description": "Anjir festivali anjir mevasining turli navlarini keng jamoatchilikka taqdim etish hamda gastronomik madaniyatni rivojlantirishga qaratilgan tadbirdir. Festival doirasida anjir ko‘rgazmalari, milliy taomlarda anjirni tayyorlash bo‘yicha master-klasslar va tanlovlar tashkil etiladi. Mehmonlar anjir mahsulotlarini tatib ko‘rish va baholash imkoniyatiga ega bo‘ladilar. Tadbir mahalliy qishloq xo‘jaligini qo‘llab-quvvatlash, Samarqandning turizm salohiyatini oshirish va tashrif buyuruvchilarga unutilmas taassurot yaratishga xizmat qiladi.",
+        "location": "Samarqand shahri",
+        "image": "/events/Anjir_Festival.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 16,
+        "date": "2026-08-10",
+        "name": "Xalqaro san’at festivali",
+        "description": "Xalqaro san’at festivali turli mamlakatlardan ijodkorlarni birlashtiruvchi va san’atning turli yo‘nalishlarini namoyish etuvchi yirik madaniy tadbirdir. Festival doirasida tasviriy va amaliy san’at ko‘rgazmalari, ijodiy mashg‘ulotlar hamda master-klasslar tashkil etiladi. Ushbu tadbir madaniy almashinuvni rivojlantirish, Samarqandning xalqaro san’at sohasidagi obro‘-e’tiborini mustahkamlash va mehmonlarga unutilmas madaniy tajriba taqdim etishga xizmat qiladi.",
+        "location": "Samarqand viloyati",
+        "image": "/events/Xalqaro_Sanat.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 17,
+        "date": "2026-09-24",
+        "name": "Vino festivali",
+        "description": "Vino festivali mehmonlarni Samarqandning boy vinochilik an’analari va mazali sharoblari bilan tanishtiruvchi gastronomik-madaniy tadbirdir. Festival doirasida mahalliy va xorijiy vino ishlab chiqaruvchilari taqdimotlari, degustatsiyalar, master-klasslar hamda musiqiy dasturlar tashkil etiladi. Tadbir gastronomik sayohat va madaniyatga qiziqqanlar uchun noyob tajriba yaratib, Samarqandning turizm salohiyatini oshirish, mahalliy tadbirkorlikni qo‘llab-quvvatlash va shaharning xalqaro miqyosdagi obro‘sini mustahkamlashga xizmat qiladi.",
+        "location": "Samarqand shahri",
+        "image": "/events/Vino_Festival.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      },
+      {
+        "id": 18,
+        "date": "2026-10-18",
+        "name": "Silk Road Bazaar festivali",
+        "description": "Silk Road Bazaar festivali mehmonlarni boy hunarmandchilik va an’anaviy san’at namunalari bilan tanishtiruvchi madaniy tadbirdir. Festival davomida mahalliy va xorijiy ustalar o‘z mahsulotlarini namoyish etadilar, hunarmandchilik bo‘yicha master-klasslar, eksklyuziv ko‘rgazmalar va interaktiv faoliyatlar tashkil etiladi. Tadbir Samarqandni qadimiy Ipak yo‘lining muhim madaniy markazi sifatida namoyon etib, shaharning turizm salohiyatini oshirish va mahalliy hunarmandchilikni rivojlantirishga xizmat qiladi.",
+        "location": "Samarqand shahri",
+        "image": "/events/Silk_Road_Bazaar.jpg",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+      }
+      
+      
+      
 ]

@@ -25,10 +25,67 @@ import {
   Eye,
   EyeOff,
   UserPlus,
+  Utensils,
+  Bed,
+  Sparkles,
 } from "lucide-react"
 import eventsData from "@/store/events.json"
+import hotelsRestaurantsData from "@/store/hotels-restaurants.json"
+import { isSameMonth, format } from "date-fns"
+import { uz } from "date-fns/locale"
+
+interface Event {
+  id: number
+  date: string
+  name: string
+  description: string
+  location: string
+  image: string
+  "location-yandex-map": string
+}
+
+interface Hotel {
+  id: number
+  name: string
+  description: string
+  rating: number
+  priceRange: string
+  priceFrom: string
+  features: string[]
+  image: string
+  location: string
+  "location-yandex-map": string
+}
+
+interface Restaurant {
+  id: number
+  name: string
+  description: string
+  rating: number
+  cuisine: string
+  averageCheck: string
+  features: string[]
+  image: string
+  location: string
+  "location-yandex-map": string
+}
 
 export default function SamarkandTravelGuide() {
+  // Функция для получения событий текущего месяца
+  const getEventsForCurrentMonth = () => {
+    const currentDate = new Date()
+    return (eventsData as Event[]).filter(event => {
+      const eventDate = new Date(event.date)
+      return isSameMonth(eventDate, currentDate)
+    })
+  }
+
+  const currentMonthEvents = getEventsForCurrentMonth()
+  
+  const monthNames = [
+    "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+    "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"
+  ]
   return (
     <div className="min-h-screen bg-background">
       {/* Registration Button - Top Right */}
@@ -194,44 +251,54 @@ export default function SamarkandTravelGuide() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
+      <section className="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary/25 via-secondary/20 to-accent/20">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
           style={{
             backgroundImage: "url('/samarkand-registan.png')",
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mb-6 drop-shadow-lg">
             Samarqanddagi eng yaxshi mehmonxonalar va restoranlarni toping!
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+          <p className="text-xl md:text-2xl font-semibold text-foreground/90 mb-8 drop-shadow-md">
             Sayohatingizni yanada qulay qiling: joylashuvingizni aniqlang, takliflar oling va yo'lingizni
             rejalashtiring.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8 py-6">
+            <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl hover:shadow-2xl transition-all duration-300">
               <MapPin className="mr-2 h-5 w-5" />
               Joylashuvni aniqlash
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-transparent">
+            <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-background/80 backdrop-blur-sm border-2 hover:bg-background shadow-lg hover:shadow-xl transition-all duration-300">
               Eng yaqin joylarni ko'rish
             </Button>
             <div className="relative group">
               <EventsCalendar events={eventsData} />
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-300 -z-10"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-300 -z-10"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Search Section */}
-      <section className="py-16 px-4 bg-muted/50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Siz qaysi xizmatni qidiryapsiz?</h2>
+      <section className="relative py-16 px-4">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: "url('/back_images/back.jpg')",
+            backgroundAttachment: "fixed"
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-4 text-foreground">Siz qaysi xizmatni qidiryapsiz?</h2>
+          <p className="text-center text-muted-foreground mb-8 text-lg">Biz siz uchun eng yaxshi variantlarni topamiz</p>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="h-12 shadow-md hover:shadow-lg transition-shadow">
                 <SelectValue placeholder="Xizmat turi" />
               </SelectTrigger>
               <SelectContent>
@@ -241,7 +308,7 @@ export default function SamarkandTravelGuide() {
               </SelectContent>
             </Select>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="h-12 shadow-md hover:shadow-lg transition-shadow">
                 <SelectValue placeholder="Narx oralig'i" />
               </SelectTrigger>
               <SelectContent>
@@ -251,7 +318,7 @@ export default function SamarkandTravelGuide() {
               </SelectContent>
             </Select>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="h-12 shadow-md hover:shadow-lg transition-shadow">
                 <SelectValue placeholder="Baholash" />
               </SelectTrigger>
               <SelectContent>
@@ -260,125 +327,257 @@ export default function SamarkandTravelGuide() {
                 <SelectItem value="all">Barchasi</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="w-full">Qidirish</Button>
+            <Button className="w-full h-12 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300">Qidirish</Button>
           </div>
-          <p className="text-center text-muted-foreground">Biz siz uchun eng yaxshi variantlarni topamiz.</p>
         </div>
       </section>
 
-      {/* Recommendations Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Bugun siz uchun eng yaxshi takliflar</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="overflow-hidden">
-              <div
-                className="h-48 bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/samarkand-luxury-hotel.png')",
-                }}
-              />
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle>Samarqand Lux Hotel</CardTitle>
-                  <Badge variant="secondary">Lyuks</Badge>
-                </div>
-                <CardDescription>Markazda joylashgan</CardDescription>
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">4.8</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2 mb-4">
-                  <Badge variant="outline">
-                    <Wifi className="h-3 w-3 mr-1" />
-                    Wi-Fi
-                  </Badge>
-                  <Badge variant="outline">
-                    <Car className="h-3 w-3 mr-1" />
-                    Parking
-                  </Badge>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full">Ko'proq ko'rish</Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div
-                className="h-48 bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/placeholder-4gaa4.png')",
-                }}
-              />
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle>Caravan Oshxona</CardTitle>
-                  <Badge variant="secondary">Restoran</Badge>
-                </div>
-                <CardDescription>Milliy taomlar</CardDescription>
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">4.5</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2 mb-4">
-                  <Badge variant="outline">
-                    <Coffee className="h-3 w-3 mr-1" />
-                    Halal
-                  </Badge>
-                  <Badge variant="outline">
-                    <Users className="h-3 w-3 mr-1" />
-                    Oila
-                  </Badge>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full">Ko'proq ko'rish</Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div
-                className="h-48 bg-cover bg-center"
-                style={{
-                  backgroundImage: "url('/registan-sunset.png')",
-                }}
-              />
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle>Registon Maydoni</CardTitle>
-                  <Badge variant="secondary">Tarixiy joy</Badge>
-                </div>
-                <CardDescription>UNESCO merosi</CardDescription>
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">4.9</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2 mb-4">
-                  <Badge variant="outline">Bepul</Badge>
-                  <Badge variant="outline">Foto</Badge>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full">Ko'proq ko'rish</Button>
-              </CardFooter>
-            </Card>
+      {/* Hotels Section */}
+      <section className="relative py-20 px-4">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: "url('/back_images/back.jpg')",
+            backgroundAttachment: "fixed"
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <Bed className="h-8 w-8 text-primary" />
+              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Eng yaxshi mehmonxonalar</h2>
+            </div>
+            <p className="text-lg text-muted-foreground">Samarqanddagi eng qulay va shinam mehmonxonalar</p>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(hotelsRestaurantsData.hotels as Hotel[]).map((hotel) => (
+              <Card 
+                key={hotel.id} 
+                className="group overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={hotel.image} 
+                    alt={hotel.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-primary/90 text-primary-foreground shadow-lg">
+                      {hotel.priceRange === "luxury" ? "Lyuks" : hotel.priceRange === "mid" ? "O'rtacha" : "Arzon"}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-3 left-3 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`h-4 w-4 ${i < hotel.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-foreground">{hotel.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    {hotel.location}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-foreground/80 mb-4 line-clamp-2">{hotel.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {hotel.features.slice(0, 3).map((feature, idx) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {feature === "WiFi" && <Wifi className="h-3 w-3 mr-1 inline" />}
+                        {feature === "Парковка" && <Car className="h-3 w-3 mr-1 inline" />}
+                        {feature === "Завтрак" && <Coffee className="h-3 w-3 mr-1 inline" />}
+                        {feature}
+                      </Badge>
+                    ))}
+                    {hotel.features.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{hotel.features.length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-lg font-bold text-primary">{hotel.priceFrom}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md hover:shadow-lg transition-all duration-300">
+                    Batafsil
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Restaurants Section */}
+      <section className="relative py-20 px-4">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: "url('/back_images/back.jpg')",
+            backgroundAttachment: "fixed"
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 mb-4">
+              <Utensils className="h-8 w-8 text-secondary" />
+              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Eng yaxshi restoranlar</h2>
+            </div>
+            <p className="text-lg text-muted-foreground">Samarqanddagi eng mazali va mashhur restoranlar</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(hotelsRestaurantsData.restaurants as Restaurant[]).map((restaurant) => (
+              <Card 
+                key={restaurant.id} 
+                className="group overflow-hidden border-2 hover:border-secondary/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={restaurant.image} 
+                    alt={restaurant.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-secondary/90 text-secondary-foreground shadow-lg">
+                      {restaurant.cuisine}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-3 left-3 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`h-4 w-4 ${i < restaurant.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-foreground">{restaurant.name}</CardTitle>
+                  <CardDescription className="flex items-center gap-1 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    {restaurant.location}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-foreground/80 mb-4 line-clamp-2">{restaurant.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {restaurant.features.slice(0, 3).map((feature, idx) => (
+                      <Badge key={idx} variant="secondary" className="text-xs">
+                        {feature === "Живая музыка" && <Sparkles className="h-3 w-3 mr-1 inline" />}
+                        {feature === "Веранда" && <Coffee className="h-3 w-3 mr-1 inline" />}
+                        {feature}
+                      </Badge>
+                    ))}
+                    {restaurant.features.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{restaurant.features.length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-lg font-bold text-secondary">{restaurant.averageCheck}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-md hover:shadow-lg transition-all duration-300">
+                    Batafsil
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Events Section */}
+      <section className="relative py-16 px-4">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: "url('/back_images/back.jpg')",
+            backgroundAttachment: "fixed"
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12 text-foreground">Samarqanddagi yaqin tadbirlar</h2>
+          {currentMonthEvents.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {currentMonthEvents.map((event, index) => {
+                  const eventDate = new Date(event.date)
+                  const day = format(eventDate, 'd')
+                  const monthIndex = eventDate.getMonth()
+                  const monthName = monthNames[monthIndex]
+                  
+                  return (
+                    <Card 
+                      key={event.id}
+                      className="border-2 hover:border-primary/50 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1"
+                    >
+                      <CardHeader>
+                        <div className="flex items-start gap-4">
+                          <div className={`${index % 2 === 0 ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground' : 'bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground'} rounded-lg p-3 text-center min-w-[60px] shadow-lg`}>
+                            <div className="text-2xl font-bold">{day}</div>
+                            <div className="text-sm">{monthName}</div>
+                          </div>
+                          <div>
+                            <CardTitle className="text-foreground font-bold">{event.name}</CardTitle>
+                            <CardDescription className="text-muted-foreground">{event.location}</CardDescription>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-foreground/80">{event.description}</p>
+                      </CardContent>
+                      <CardFooter>
+                        <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">Batafsil</Button>
+                      </CardFooter>
+                    </Card>
+                  )
+                })}
+              </div>
+              <div className="text-center mt-8">
+                <Button variant="outline" size="lg">
+                  <Calendar className="mr-2 h-5 w-5" />
+                  To'liq taqvimni ko'rish
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <p className="text-xl text-muted-foreground mb-2">Bu oyda tadbirlar yo'q</p>
+              <p className="text-muted-foreground">Boshqa oylardagi tadbirlarni ko'rish uchun taqvimni tekshiring</p>
+              <div className="mt-6">
+                <Button variant="outline" size="lg">
+                  <Calendar className="mr-2 h-5 w-5" />
+                  To'liq taqvimni ko'rish
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Reviews Section */}
-      <section className="py-16 px-4 bg-muted/50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Boshqa sayyohlar nima deyishmoqda?</h2>
+      <section className="relative py-16 px-4">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: "url('/back_images/back.jpg')",
+            backgroundAttachment: "fixed"
+          }}
+        />
+        <div className="absolute inset-0 bg-background/80" />
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12 text-foreground">Boshqa sayyohlar nima deyishmoqda?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card>
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <Avatar>
@@ -386,7 +585,7 @@ export default function SamarkandTravelGuide() {
                     <AvatarFallback>J</AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg">Jamshid</CardTitle>
+                    <CardTitle className="text-lg text-foreground">Jamshid</CardTitle>
                     <CardDescription>Toshkent</CardDescription>
                   </div>
                 </div>
@@ -397,11 +596,11 @@ export default function SamarkandTravelGuide() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p>"Xizmat a'lo darajada, manzil juda qulay!"</p>
+                <p className="text-foreground/80">"Xizmat a'lo darajada, manzil juda qulay!"</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <Avatar>
@@ -409,7 +608,7 @@ export default function SamarkandTravelGuide() {
                     <AvatarFallback>M</AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg">Malika</CardTitle>
+                    <CardTitle className="text-lg text-foreground">Malika</CardTitle>
                     <CardDescription>Buxoro</CardDescription>
                   </div>
                 </div>
@@ -420,11 +619,11 @@ export default function SamarkandTravelGuide() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p>"Milliy taomlar juda mazali, atmosfera ajoyib!"</p>
+                <p className="text-foreground/80">"Milliy taomlar juda mazali, atmosfera ajoyib!"</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <Avatar>
@@ -432,7 +631,7 @@ export default function SamarkandTravelGuide() {
                     <AvatarFallback>A</AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg">Ahmad</CardTitle>
+                    <CardTitle className="text-lg text-foreground">Ahmad</CardTitle>
                     <CardDescription>Farg'ona</CardDescription>
                   </div>
                 </div>
@@ -444,16 +643,16 @@ export default function SamarkandTravelGuide() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p>"Registon haqiqatan ham ajoyib, lekin juda gavjum edi."</p>
+                <p className="text-foreground/80">"Registon haqiqatan ham ajoyib, lekin juda gavjum edi."</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Review Form */}
           <div className="mt-12 max-w-2xl mx-auto">
-            <Card>
+            <Card className="shadow-xl border-2">
               <CardHeader>
-                <CardTitle>O'z fikringizni qoldiring</CardTitle>
+                <CardTitle className="text-foreground font-bold">O'z fikringizni qoldiring</CardTitle>
                 <CardDescription>Boshqa sayyohlarga yordam bering</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -484,7 +683,7 @@ export default function SamarkandTravelGuide() {
       {/* Map Section */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Qayerga bormoqchisiz?</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12 text-foreground">Qayerga bormoqchisiz?</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="h-96 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-center">
@@ -494,24 +693,24 @@ export default function SamarkandTravelGuide() {
               </div>
             </div>
             <div className="space-y-6">
-              <Card>
+              <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
-                  <CardTitle>Transport ma'lumoti</CardTitle>
+                  <CardTitle className="text-foreground font-bold">Transport ma'lumoti</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Car className="h-5 w-5 text-primary" />
-                      <span>Taksi narxi</span>
+                      <span className="text-foreground">Taksi narxi</span>
                     </div>
-                    <span className="font-semibold">$3</span>
+                    <span className="font-bold text-primary">$3</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Users className="h-5 w-5 text-primary" />
-                      <span>Piyoda</span>
+                      <span className="text-foreground">Piyoda</span>
                     </div>
-                    <span className="font-semibold">10 daqiqa</span>
+                    <span className="font-bold text-primary">10 daqiqa</span>
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -525,76 +724,21 @@ export default function SamarkandTravelGuide() {
         </div>
       </section>
 
-      {/* Events Section */}
-      <section className="py-16 px-4 bg-muted/50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Samarqanddagi yaqin tadbirlar</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <div className="bg-primary text-primary-foreground rounded-lg p-3 text-center min-w-[60px]">
-                    <div className="text-2xl font-bold">21</div>
-                    <div className="text-sm">Mart</div>
-                  </div>
-                  <div>
-                    <CardTitle>Navro'z</CardTitle>
-                    <CardDescription>Registon maydoni</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Sharqona bayram, sumalak tayyorlash marosimi</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline">Batafsil</Button>
-              </CardFooter>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <div className="bg-secondary text-secondary-foreground rounded-lg p-3 text-center min-w-[60px]">
-                    <div className="text-2xl font-bold">25</div>
-                    <div className="text-sm">Mart</div>
-                  </div>
-                  <div>
-                    <CardTitle>Lola Festivali</CardTitle>
-                    <CardDescription>Farg'ona yo'nalishi</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Bahoriy guldastalar bilan sayr</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline">Batafsil</Button>
-              </CardFooter>
-            </Card>
-          </div>
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg">
-              <Calendar className="mr-2 h-5 w-5" />
-              To'liq taqvimni ko'rish
-            </Button>
-          </div>
-        </div>
-      </section>
-
+      
       {/* Offline Banner */}
-      <section className="py-8 px-4 bg-primary text-primary-foreground">
+      <section className="py-8 px-4 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-xl">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-xl font-semibold mb-2">Internet yo'qmi?</h3>
-          <p>Xaritani oldindan yuklab, sayohatingizni davom ettiring!</p>
+          <h3 className="text-xl font-bold mb-2">Internet yo'qmi?</h3>
+          <p className="font-medium">Xaritani oldindan yuklab, sayohatingizni davom ettiring!</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 bg-card border-t">
+      <footer className="py-12 px-4 bg-card border-t-2 border-border">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold mb-4">Samarqand Travel Guide</h3>
-            <p className="text-muted-foreground mb-6">
+            <h3 className="text-2xl font-extrabold mb-4 text-foreground">Samarqand Travel Guide</h3>
+            <p className="text-foreground/70 mb-6 font-medium">
               © 2025 Samarqand Travel Guide | Biz bilan bog'laning: info@samarqandtravel.uz
             </p>
             <div className="flex justify-center gap-4">

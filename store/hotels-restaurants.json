@@ -1,0 +1,150 @@
+{
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Registan Plaza Hotel",
+      "description": "Роскошный отель в самом сердце Самарканда, всего в нескольких минутах ходьбы от площади Регистан. Современные номера с видом на исторические памятники.",
+      "rating": 5,
+      "priceRange": "luxury",
+      "priceFrom": "от $120/ночь",
+      "features": ["WiFi", "Парковка", "Завтрак", "SPA", "Бассейн", "Ресторан"],
+      "image": "/samarkand-luxury-hotel.png",
+      "location": "Регистан, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 2,
+      "name": "Bibi-Khanym Boutique Hotel",
+      "description": "Уютный бутик-отель рядом с мечетью Биби-Ханым. Сочетает современный комфорт с восточным колоритом. Идеально для романтического отдыха.",
+      "rating": 4,
+      "priceRange": "mid",
+      "priceFrom": "от $65/ночь",
+      "features": ["WiFi", "Парковка", "Завтрак", "Терраса"],
+      "image": "/samarkand-registan.png",
+      "location": "Биби-Ханым, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 3,
+      "name": "Shah-i-Zinda Guest House",
+      "description": "Традиционный гостевой дом в историческом районе. Аутентичная атмосфера, гостеприимный персонал и домашняя кухня.",
+      "rating": 4,
+      "priceRange": "budget",
+      "priceFrom": "от $35/ночь",
+      "features": ["WiFi", "Завтрак", "Трансфер"],
+      "image": "/registan-sunset.png",
+      "location": "Шахи-Зинда, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 4,
+      "name": "Samarkand Silk Road Hotel",
+      "description": "Современный отель с видом на древние памятники Великого Шелкового пути. Просторные номера, отличный сервис и близость к главным достопримечательностям.",
+      "rating": 5,
+      "priceRange": "luxury",
+      "priceFrom": "от $150/ночь",
+      "features": ["WiFi", "Парковка", "Завтрак", "SPA", "Фитнес", "Бизнес-центр"],
+      "image": "/samarkand-luxury-hotel.png",
+      "location": "Центр, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 5,
+      "name": "Ulugbek Observatory Inn",
+      "description": "Небольшой уютный отель рядом с обсерваторией Улугбека. Тихая атмосфера, чистые номера и дружелюбный персонал.",
+      "rating": 3,
+      "priceRange": "budget",
+      "priceFrom": "от $28/ночь",
+      "features": ["WiFi", "Завтрак"],
+      "image": "/registan-sunset.png",
+      "location": "Обсерватория Улугбека, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 6,
+      "name": "Timurid Palace Hotel",
+      "description": "Элегантный отель в стиле эпохи Тимуридов. Роскошные интерьеры, изысканная кухня и первоклассный сервис.",
+      "rating": 5,
+      "priceRange": "luxury",
+      "priceFrom": "от $180/ночь",
+      "features": ["WiFi", "Парковка", "Завтрак", "SPA", "Бассейн", "Конференц-зал"],
+      "image": "/samarkand-luxury-hotel.png",
+      "location": "Регистан, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    }
+  ],
+  "restaurants": [
+    {
+      "id": 1,
+      "name": "Platan Restaurant",
+      "description": "Премиальный ресторан узбекской кухни с видом на Регистан. Изысканные блюда, приготовленные по старинным рецептам, и элегантная атмосфера.",
+      "rating": 5,
+      "cuisine": "Узбекская",
+      "averageCheck": "от 80 000 сум",
+      "features": ["Веранда", "Живая музыка", "VIP-зал", "Вид на Регистан"],
+      "image": "/events/Sharq_taomlari2.png",
+      "location": "Регистан, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 2,
+      "name": "Bibikhanum Teahouse",
+      "description": "Традиционная чайхана рядом с мечетью Биби-Ханым. Аутентичная атмосфера, свежий самоварный чай и традиционные сладости.",
+      "rating": 4,
+      "cuisine": "Узбекская",
+      "averageCheck": "от 30 000 сум",
+      "features": ["Традиционная атмосфера", "Самовар", "Терраса"],
+      "image": "/events/Shirinliklar.png",
+      "location": "Биби-Ханым, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 3,
+      "name": "Karimbek Restaurant",
+      "description": "Семейный ресторан с домашней кухней. Знаменит своими пловом, шашлыком и другими традиционными блюдами. Уютная атмосфера и гостеприимство.",
+      "rating": 4,
+      "cuisine": "Узбекская",
+      "averageCheck": "от 50 000 сум",
+      "features": ["Домашняя кухня", "Семейная атмосфера", "Терраса"],
+      "image": "/events/Sharq_taomlari2.png",
+      "location": "Центр, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 4,
+      "name": "Old City Restaurant",
+      "description": "Ресторан в историческом здании старого города. Европейская и узбекская кухня, изысканные вина и романтическая атмосфера.",
+      "rating": 5,
+      "cuisine": "Европейская, Узбекская",
+      "averageCheck": "от 100 000 сум",
+      "features": ["Историческое здание", "Винная карта", "Романтическая атмосфера"],
+      "image": "/events/Vino_Festival.png",
+      "location": "Старый город, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 5,
+      "name": "Somsa House",
+      "description": "Небольшое кафе, специализирующееся на самсах и других традиционных закусках. Свежая выпечка из тандыра, доступные цены.",
+      "rating": 4,
+      "cuisine": "Узбекская",
+      "averageCheck": "от 15 000 сум",
+      "features": ["Тандыр", "Быстрое обслуживание", "Уличная еда"],
+      "image": "/events/Shirinliklar.png",
+      "location": "Центр, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    },
+    {
+      "id": 6,
+      "name": "Silk Road Garden",
+      "description": "Ресторан под открытым небом в саду. Свежие сезонные блюда, барбекю и живая музыка по вечерам. Идеально для ужина на свежем воздухе.",
+      "rating": 5,
+      "cuisine": "Узбекская, Международная",
+      "averageCheck": "от 70 000 сум",
+      "features": ["Сад", "Барбекю", "Живая музыка", "Детская площадка"],
+      "image": "/events/Silk_Road_Bazaar.jpg",
+      "location": "Пригород, Самарканд",
+      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
+    }
+  ]
+}
