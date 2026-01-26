@@ -261,11 +261,11 @@ export default function SamarkandTravelGuide() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mb-6 drop-shadow-lg">
-            Samarqanddagi eng yaxshi mehmonxonalar va restoranlarni toping!
+            Samarqanddagi eng zo'r mehmonxonalar va restoranlarni kashf eting!
           </h1>
           <p className="text-xl md:text-2xl font-semibold text-foreground/90 mb-8 drop-shadow-md">
-            Sayohatingizni yanada qulay qiling: joylashuvingizni aniqlang, takliflar oling va yo'lingizni
-            rejalashtiring.
+            Safaringizni osonlashtiring: joylashuvingizni aniqlang, takliflarni oling va yo‘nalishingizni
+            rejalang.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl hover:shadow-2xl transition-all duration-300">
