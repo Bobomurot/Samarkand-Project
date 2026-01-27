@@ -26,12 +26,13 @@ import {
   Facebook,
   MessageCircle
 } from "lucide-react"
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, getDay } from "date-fns"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, getDay, isWithinInterval, isAfter, isBefore, startOfDay, endOfDay } from "date-fns"
 import { uz } from "date-fns/locale"
 
 interface Event {
   id: number
   date: string
+  endDate?: string
   name: string
   description: string
   location: string
@@ -59,18 +60,86 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
 
   // Get events for the current month
   const getEventsForMonth = (date: Date) => {
+    const monthStart = startOfMonth(date)
+    const monthEnd = endOfMonth(date)
+    
     return events.filter(event => {
-      const eventDate = new Date(event.date)
-      return isSameMonth(eventDate, date)
+      const eventStart = startOfDay(new Date(event.date))
+      const eventEnd = event.endDate ? endOfDay(new Date(event.endDate)) : startOfDay(new Date(event.date))
+      
+      // Check if event overlaps with the month
+      return (eventStart <= monthEnd && eventEnd >= monthStart)
     })
   }
 
   // Get events for a specific day
   const getEventsForDay = (date: Date) => {
+    const dayStart = startOfDay(date)
+    const dayEnd = endOfDay(date)
+    
     return events.filter(event => {
-      const eventDate = new Date(event.date)
-      return isSameDay(eventDate, date)
+      const eventStart = startOfDay(new Date(event.date))
+      const eventEnd = event.endDate ? endOfDay(new Date(event.endDate)) : startOfDay(new Date(event.date))
+      
+      // Check if day is within event range
+      return (eventStart <= dayEnd && eventEnd >= dayStart)
     })
+  }
+
+  // Get event position in range (start, middle, end, single)
+  const getEventPositionInRange = (event: Event, date: Date): 'start' | 'middle' | 'end' | 'single' => {
+    if (!event.endDate) return 'single'
+    
+    const eventStart = startOfDay(new Date(event.date))
+    const eventEnd = endOfDay(new Date(event.endDate))
+    const currentDay = startOfDay(date)
+    
+    if (isSameDay(eventStart, currentDay) && isSameDay(eventEnd, currentDay)) {
+      return 'single'
+    }
+    if (isSameDay(eventStart, currentDay)) {
+      return 'start'
+    }
+    if (isSameDay(eventEnd, currentDay)) {
+      return 'end'
+    }
+    return 'middle'
+  }
+
+  const isDateInEventRange = (date: Date, event: Event) => {
+    if (!event.endDate) return false
+    const eventStart = startOfDay(new Date(event.date))
+    const eventEnd = endOfDay(new Date(event.endDate))
+    const targetDay = startOfDay(date)
+    return targetDay >= eventStart && targetDay <= eventEnd
+  }
+
+  const getSelectedMultiDayEvent = (date: Date | null) => {
+    if (!date) return null
+    const dayEvents = getEventsForDay(date)
+    return (
+      dayEvents.find(event => {
+        if (!event.endDate) return false
+        return !isSameDay(new Date(event.date), new Date(event.endDate))
+      }) || null
+    )
+  }
+
+  // Format event date range
+  const formatEventDateRange = (event: Event): string => {
+    const startDate = new Date(event.date)
+    if (!event.endDate) {
+      return format(startDate, 'd MMMM', { locale: uz })
+    }
+    const endDate = new Date(event.endDate)
+    const startMonth = startDate.getMonth()
+    const endMonth = endDate.getMonth()
+    
+    if (startMonth === endMonth) {
+      return `${format(startDate, 'd', { locale: uz })}-${format(endDate, 'd MMMM', { locale: uz })}`
+    } else {
+      return `${format(startDate, 'd MMMM', { locale: uz })} - ${format(endDate, 'd MMMM', { locale: uz })}`
+    }
   }
 
   // Get event status (past, current, upcoming)
@@ -100,6 +169,12 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
 
   const calendarDays = getCalendarDays()
   const monthEvents = getEventsForMonth(currentDate)
+  const calendarWeeks: Date[][] = []
+  const selectedMultiDayEvent = getSelectedMultiDayEvent(selectedDate)
+
+  for (let i = 0; i < calendarDays.length; i += 7) {
+    calendarWeeks.push(calendarDays.slice(i, i + 7))
+  }
 
   const monthNames = [
     "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
@@ -297,113 +372,312 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
               ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-1 sm:gap-2">
-              {calendarDays.map((day, index) => {
-                const dayEvents = getEventsForDay(day)
-                const isCurrentMonth = isSameMonth(day, currentDate)
-                const isToday = isSameDay(day, new Date())
-                const isSelected = selectedDate && isSameDay(day, selectedDate)
-                
-                // Determine event status for color coding
-                const eventStatus = dayEvents.length > 0 ? getEventStatus(day) : null
-                const isPast = day < new Date() && !isToday
-                const isUpcoming = day > new Date()
+            <div className="flex flex-col gap-1 sm:gap-2">
+              {calendarWeeks.map((week, weekIndex) => {
+                const weekStart = startOfDay(week[0])
+                const weekEnd = endOfDay(week[6])
+                const multiDayEventsForWeek = monthEvents.filter(event => {
+                  if (!event.endDate) return false
+                  const eventStart = startOfDay(new Date(event.date))
+                  const eventEnd = endOfDay(new Date(event.endDate))
+                  if (isSameDay(eventStart, eventEnd)) return false
+                  return eventStart <= weekEnd && eventEnd >= weekStart
+                })
 
                 return (
-                  <div
-                    key={index}
-                    className={`
-                      relative p-1 sm:p-2 lg:p-3 h-16 sm:h-20 lg:h-24 border rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95
-                      ${isCurrentMonth ? 'bg-background hover:bg-primary/5 hover:text-foreground' : 'bg-muted/50 text-muted-foreground'}
-                      ${isToday ? 'ring-2 ring-green-500 bg-green-50 dark:bg-green-900/20 shadow-lg' : ''}
-                      ${isSelected ? `
-                        bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 
-                        text-white shadow-2xl scale-105 ring-4 ring-blue-400/50
-                        border-blue-500 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900
-                        hover:shadow-2xl hover:ring-blue-400/70
-                      ` : ''}
-                      ${isPast && isCurrentMonth && !isSelected ? 'bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-300 hover:text-red-700 dark:hover:text-red-300' : ''}
-                      ${isUpcoming && isCurrentMonth && !isSelected ? 'bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-700 hover:text-blue-700 dark:hover:text-blue-300' : ''}
-                      ${dayEvents.length > 0 && !isSelected ? 'border-primary/50 hover:border-primary shadow-sm' : ''}
-                      ${dayEvents.length > 0 && !isSelected ? 'hover:shadow-md' : ''}
-                      ${isSelected ? 'border-blue-500' : ''}
-                    `}
-                    onClick={() => setSelectedDate(day)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className={`
-                        text-xs sm:text-sm lg:text-base font-medium
-                        ${isSelected ? 'text-white font-bold text-shadow-sm' : ''}
-                      `}>
-                        {format(day, 'd')}
-                      </div>
-                      {dayEvents.length > 0 && (
-                        <div className={`
-                          w-1.5 h-1.5 rounded-full animate-pulse
-                          ${isSelected ? 'bg-white/80' : 'bg-primary/60'}
-                        `}></div>
-                      )}
-                    </div>
-                    {dayEvents.length > 0 && (
-                      <div className="absolute bottom-1 sm:bottom-1.5 lg:bottom-2 left-1 sm:left-1.5 lg:left-2 right-1 sm:right-1.5 lg:right-2">
-                        <div className="flex flex-col gap-0.5 sm:gap-1">
-                          {dayEvents.slice(0, 2).map((event) => {
-                            const eventStatus = getEventStatus(new Date(event.date))
-                            let badgeVariant = 'default'
-                            let badgeClass = ''
-                            
-                            if (eventStatus === 'past') {
-                              badgeVariant = 'secondary'
-                              badgeClass = 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700'
-                            } else if (eventStatus === 'current') {
-                              badgeVariant = 'default'
-                              badgeClass = 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700'
-                            } else if (eventStatus === 'upcoming') {
-                              badgeVariant = 'outline'
-                              badgeClass = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700'
-                            }
-                            
-                            return (
-                              <div
-                                key={event.id}
-                                className={`
-                                  px-1 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] font-medium rounded-md border
-                                  ${isSelected ? `
-                                    bg-white/90 text-gray-800 border-white/50 
-                                    shadow-md hover:bg-white hover:shadow-lg
-                                    backdrop-blur-sm
-                                  ` : badgeClass}
-                                  ${!isSelected ? 'shadow-sm hover:shadow-md' : ''}
-                                  transition-all duration-200
-                                  truncate max-w-full
-                                  ${!isSelected ? 'hover:!text-inherit' : ''}
-                                `}
-                                title={event.name}
-                              >
-                                {event.name.length > 8 ? `${event.name.substring(0, 8)}...` : event.name}
-                              </div>
-                            )
-                          })}
-                          {dayEvents.length > 2 && (
-                            <div className={`
-                              px-1.5 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] 
+                  <div key={weekIndex} className="relative">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                      {week.map((day, index) => {
+                        const dayEvents = getEventsForDay(day)
+                        const dayEventsForBadges = dayEvents.filter(event => {
+                          if (!event.endDate) return true
+                          return isSameDay(new Date(event.date), new Date(event.endDate))
+                        })
+                        const multiDayStartEvents = dayEvents.filter(event => {
+                          if (!event.endDate) return false
+                          const eventStart = startOfDay(new Date(event.date))
+                          const eventEnd = endOfDay(new Date(event.endDate))
+                          return isSameDay(eventStart, day) && !isSameDay(eventStart, eventEnd)
+                        })
+                        const isCurrentMonth = isSameMonth(day, currentDate)
+                        const isToday = isSameDay(day, new Date())
+                        const isSelectedDay = Boolean(selectedDate && isSameDay(day, selectedDate))
+                        const isInSelectedRange = Boolean(
+                          selectedMultiDayEvent && isDateInEventRange(day, selectedMultiDayEvent)
+                        )
+                        const isSelected = isSelectedDay || isInSelectedRange
+                        
+                        // Determine event status for color coding
+                        // For multi-day events, use the status from the start date
+                        let eventStatus = null
+                        if (dayEvents.length > 0) {
+                          const firstEvent = dayEvents[0]
+                          const eventStartDate = new Date(firstEvent.date)
+                          eventStatus = getEventStatus(eventStartDate)
+                        }
+                        
+                        const isPast = day < new Date() && !isToday
+                        const isUpcoming = day > new Date()
+
+                        // Check if events continue to next/previous day for visual connection
+                        const nextDay = new Date(day)
+                        nextDay.setDate(nextDay.getDate() + 1)
+                        const prevDay = new Date(day)
+                        prevDay.setDate(prevDay.getDate() - 1)
+                        
+                        const hasContinuingEvents = dayEvents.some(event => {
+                          if (!event.endDate) return false
+                          const eventEnd = endOfDay(new Date(event.endDate!))
+                          return eventEnd >= endOfDay(nextDay)
+                        })
+                        
+                        const hasStartingEvents = dayEvents.some(event => {
+                          const eventStart = startOfDay(new Date(event.date))
+                          return isSameDay(eventStart, day) && event.endDate && !isSameDay(new Date(event.endDate), day)
+                        })
+                        
+                        const hasEndingEvents = dayEvents.some(event => {
+                          if (!event.endDate) return false
+                          const eventEnd = endOfDay(new Date(event.endDate!))
+                          return isSameDay(eventEnd, day) && !isSameDay(new Date(event.date), day)
+                        })
+                        
+                        // Check if previous day has continuing events (for left border removal)
+                        const prevDayEvents = getEventsForDay(prevDay)
+                        const prevDayHasContinuing = prevDayEvents.some(event => {
+                          if (!event.endDate) return false
+                          const eventEnd = endOfDay(new Date(event.endDate!))
+                          return eventEnd >= endOfDay(day)
+                        })
+                        
+                        // Determine if this is part of a multi-day event
+                        const isPartOfMultiDayEvent = hasContinuingEvents || prevDayHasContinuing
+                        
+                        // Get the multi-day event for consistent styling
+                        const multiDayEvent = dayEvents.find(e => e.endDate && (
+                          hasContinuingEvents || prevDayHasContinuing
+                        ))
+                        const multiDayEventStatus = multiDayEvent ? getEventStatus(new Date(multiDayEvent.date)) : null
+                        
+                        // Determine background for multi-day events
+                        let multiDayBg = ''
+                        if (isPartOfMultiDayEvent && !isSelected && dayEvents.length > 0) {
+                          if (multiDayEventStatus === 'past') {
+                            multiDayBg = 'bg-red-50 dark:bg-red-900/10'
+                          } else if (multiDayEventStatus === 'current') {
+                            multiDayBg = 'bg-green-50 dark:bg-green-900/20'
+                          } else if (multiDayEventStatus === 'upcoming') {
+                            multiDayBg = 'bg-blue-50 dark:bg-blue-900/10'
+                          } else {
+                            multiDayBg = isCurrentMonth ? 'bg-background' : 'bg-muted/50'
+                          }
+                        }
+
+                        return (
+                          <div
+                            key={`${weekIndex}-${index}`}
+                            className={`
+                              relative p-1 sm:p-2 lg:p-3 h-16 sm:h-20 lg:h-24 cursor-pointer transition-all duration-300
+                              ${isPartOfMultiDayEvent ? 'hover:shadow-md' : 'hover:scale-105 hover:shadow-lg active:scale-95'}
+                              ${isPartOfMultiDayEvent ? (
+                                hasStartingEvents && hasEndingEvents ? 'rounded-lg' :
+                                hasStartingEvents ? 'rounded-l-lg rounded-r-none' :
+                                hasEndingEvents ? 'rounded-r-lg rounded-l-none' :
+                                'rounded-none'
+                              ) : 'rounded-lg'}
+                              ${hasContinuingEvents ? '-mr-1 sm:-mr-2' : ''}
+                              ${prevDayHasContinuing ? '-ml-1 sm:-ml-2' : ''}
+                              ${isPartOfMultiDayEvent && dayEvents.length > 0 && !isSelected ? `
+                                border-t border-b border-primary/50
+                                ${hasStartingEvents ? 'border-l border-primary/50' : 'border-l-0'}
+                                ${hasContinuingEvents ? 'border-r-0' : 'border-r border-primary/50'}
+                                ${multiDayBg}
+                              ` : ''}
+                              ${!isPartOfMultiDayEvent ? 'border' : ''}
+                              ${!isPartOfMultiDayEvent && isCurrentMonth ? 'bg-background hover:bg-primary/5 hover:text-foreground' : ''}
+                              ${!isPartOfMultiDayEvent && !isCurrentMonth ? 'bg-muted/50 text-muted-foreground' : ''}
+                              ${isToday && !isPartOfMultiDayEvent ? 'ring-2 ring-green-500 bg-green-50 dark:bg-green-900/20 shadow-lg' : ''}
+                              ${isToday && isPartOfMultiDayEvent ? 'ring-2 ring-green-500 ring-inset' : ''}
                               ${isSelected ? `
-                                bg-white/90 text-gray-800 border-white/50 
-                                shadow-md hover:bg-white hover:shadow-lg
-                                backdrop-blur-sm
-                              ` : `
-                                bg-gradient-to-r from-primary/20 to-secondary/20 
-                                text-primary-foreground border-primary/30 shadow-sm
-                                hover:!text-primary-foreground
-                              `}
-                              font-semibold rounded-md border
-                              flex items-center justify-center
-                              transition-all duration-200
-                            `}>
-                              +{dayEvents.length - 2} more
+                                bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 
+                                text-white shadow-2xl scale-105 ring-4 ring-blue-400/50
+                                border-blue-500 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900
+                                hover:shadow-2xl hover:ring-blue-400/70 border-2
+                              ` : ''}
+                              ${isPast && isCurrentMonth && !isSelected && !isPartOfMultiDayEvent ? 'bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-300 hover:text-red-700 dark:hover:text-red-300' : ''}
+                              ${isUpcoming && isCurrentMonth && !isSelected && !isPartOfMultiDayEvent ? 'bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-700 hover:text-blue-700 dark:hover:text-blue-300' : ''}
+                              ${dayEvents.length > 0 && !isSelected && !isPartOfMultiDayEvent ? 'border-primary/50 hover:border-primary shadow-sm hover:shadow-md' : ''}
+                              ${isPartOfMultiDayEvent && multiDayEventStatus === 'past' && !isSelected ? 'text-red-700 dark:text-red-300' : ''}
+                              ${isPartOfMultiDayEvent && multiDayEventStatus === 'upcoming' && !isSelected ? 'text-blue-700 dark:text-blue-300' : ''}
+                            `}
+                            style={{
+                              zIndex: isPartOfMultiDayEvent ? 1 : 0
+                            }}
+                            onClick={() => {
+                              if (isPartOfMultiDayEvent && multiDayEvent) {
+                                setSelectedDate(startOfDay(new Date(multiDayEvent.date)))
+                                return
+                              }
+                              setSelectedDate(day)
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className={`
+                                text-xs sm:text-sm lg:text-base font-medium
+                                ${isSelected ? 'text-white font-bold text-shadow-sm' : ''}
+                              `}>
+                                {format(day, 'd')}
+                              </div>
+                              {dayEventsForBadges.length > 0 && (
+                                <div className={`
+                                  w-1.5 h-1.5 rounded-full animate-pulse
+                                  ${isSelected ? 'bg-white/80' : 'bg-primary/60'}
+                                `}></div>
+                              )}
                             </div>
-                          )}
-                        </div>
+                            {(multiDayStartEvents.length > 0 || dayEventsForBadges.length > 0) && (
+                              <div className="absolute bottom-1 sm:bottom-1.5 lg:bottom-2 left-1 sm:left-1.5 lg:left-2 right-1 sm:right-1.5 lg:right-2">
+                                <div className="flex flex-col gap-0.5 sm:gap-1">
+                                  {multiDayStartEvents.length > 0 && (
+                                    <div
+                                      className={`
+                                        px-1 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] font-semibold rounded-md border
+                                        ${isSelected ? 'bg-white/90 text-gray-800 border-white/50' : 'bg-primary/20 text-primary border-primary/30'}
+                                        shadow-sm truncate
+                                      `}
+                                      title={multiDayStartEvents[0].name}
+                                    >
+                                      {multiDayStartEvents[0].name.length > 8
+                                        ? `${multiDayStartEvents[0].name.substring(0, 8)}...`
+                                        : multiDayStartEvents[0].name}
+                                    </div>
+                                  )}
+                                  {dayEventsForBadges.slice(0, 2).map((event) => {
+                                    const eventStatus = getEventStatus(new Date(event.date))
+                                    const eventPosition = getEventPositionInRange(event, day)
+                                    const isMultiDay = Boolean(
+                                      event.endDate && !isSameDay(new Date(event.date), new Date(event.endDate))
+                                    )
+                                    const shouldShowLabel = !isMultiDay || eventPosition === 'start'
+                                    let badgeVariant = 'default'
+                                    let badgeClass = ''
+                                    
+                                    if (eventStatus === 'past') {
+                                      badgeVariant = 'secondary'
+                                      badgeClass = 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700'
+                                    } else if (eventStatus === 'current') {
+                                      badgeVariant = 'default'
+                                      badgeClass = 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700'
+                                    } else if (eventStatus === 'upcoming') {
+                                      badgeVariant = 'outline'
+                                      badgeClass = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700'
+                                    }
+                                    
+                                    // Determine border radius based on position
+                                    let borderRadiusClass = 'rounded-md'
+                                    if (eventPosition === 'start') {
+                                      borderRadiusClass = 'rounded-l-md rounded-r-none'
+                                    } else if (eventPosition === 'end') {
+                                      borderRadiusClass = 'rounded-r-md rounded-l-none'
+                                    } else if (eventPosition === 'middle') {
+                                      borderRadiusClass = 'rounded-none'
+                                    }
+                                    
+                                    return (
+                                      <div
+                                        key={event.id}
+                                        className={`
+                                          px-1 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] font-medium ${borderRadiusClass} border
+                                          ${isSelected ? `
+                                            bg-white/90 text-gray-800 border-white/50 
+                                            shadow-md hover:bg-white hover:shadow-lg
+                                            backdrop-blur-sm
+                                          ` : badgeClass}
+                                          ${!isSelected ? 'shadow-sm hover:shadow-md' : ''}
+                                          transition-all duration-200
+                                          truncate max-w-full
+                                          ${!shouldShowLabel ? 'text-transparent select-none pointer-events-none' : ''}
+                                          ${!isSelected ? 'hover:!text-inherit' : ''}
+                                        `}
+                                        title={shouldShowLabel ? event.name : ''}
+                                      >
+                                        {shouldShowLabel
+                                          ? (event.name.length > 8 ? `${event.name.substring(0, 8)}...` : event.name)
+                                          : '\u00A0'}
+                                      </div>
+                                    )
+                                  })}
+                                  {dayEventsForBadges.length > 2 && (
+                                    <div className={`
+                                      px-1.5 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] 
+                                      ${isSelected ? `
+                                        bg-white/90 text-gray-800 border-white/50 
+                                        shadow-md hover:bg-white hover:shadow-lg
+                                        backdrop-blur-sm
+                                      ` : `
+                                        bg-gradient-to-r from-primary/20 to-secondary/20 
+                                        text-primary-foreground border-primary/30 shadow-sm
+                                        hover:!text-primary-foreground
+                                      `}
+                                      font-semibold rounded-md border
+                                      flex items-center justify-center
+                                      transition-all duration-200
+                                    `}>
+                                      +{dayEventsForBadges.length - 2} more
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                    {multiDayEventsForWeek.length > 0 && (
+                      <div className="absolute inset-0 grid grid-cols-7 gap-1 sm:gap-2 pointer-events-none">
+                        {multiDayEventsForWeek.map((event, eventIndex) => {
+                          const eventStart = startOfDay(new Date(event.date))
+                          const eventEnd = endOfDay(new Date(event.endDate!))
+                          const startIndex = eventStart <= weekStart
+                            ? 0
+                            : week.findIndex(d => isSameDay(d, eventStart))
+                          const endIndex = eventEnd >= weekEnd
+                            ? 6
+                            : week.findIndex(d => isSameDay(d, eventEnd))
+
+                          if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
+                            return null
+                          }
+
+                          const eventStatus = getEventStatus(new Date(event.date))
+                          let barClass = 'bg-blue-200/70 border-blue-300 text-blue-800'
+
+                          if (eventStatus === 'past') {
+                            barClass = 'bg-red-200/70 border-red-300 text-red-800'
+                          } else if (eventStatus === 'current') {
+                            barClass = 'bg-green-200/70 border-green-300 text-green-800'
+                          }
+
+                          const isSelectedRange = Boolean(
+                            selectedMultiDayEvent && selectedMultiDayEvent.id === event.id
+                          )
+
+                          return (
+                            <div
+                              key={event.id}
+                              className={`pointer-events-auto h-4 sm:h-5 rounded-md border px-1 text-[8px] sm:text-[9px] font-medium flex items-center ${barClass} ${isSelectedRange ? 'ring-2 ring-blue-400/70 shadow-md' : ''}`}
+                              style={{
+                                gridColumn: `${startIndex + 1} / ${endIndex + 2}`,
+                                marginTop: 4 + eventIndex * 12,
+                                alignSelf: 'start'
+                              }}
+                              onClick={() => setSelectedDate(startOfDay(new Date(event.date)))}
+                              title={event.name}
+                            >
+                              <span className="truncate">{event.name}</span>
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
@@ -465,21 +739,44 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                         bgColor = 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/20'
                       }
                       
+                      const dateRange = formatEventDateRange(event)
+                      
                       return (
-                        <Card key={event.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-l-4 ${borderColor}`}>
+                        <Card key={event.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-l-4 ${borderColor} group`}>
                         <div className="flex flex-col sm:flex-row">
-                          <div className={`w-full sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 ${bgColor} flex items-center justify-center`}>
-                            <div className="text-center">
-                              <div className={`text-base sm:text-lg lg:text-xl font-bold ${
-                                eventStatus === 'past' ? 'text-red-600 dark:text-red-400' :
-                                eventStatus === 'current' ? 'text-green-600 dark:text-green-400' :
-                                eventStatus === 'upcoming' ? 'text-blue-600 dark:text-blue-400' :
-                                'text-primary'
+                          <div className="w-full sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 relative overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/10 dark:to-secondary/10 group-hover:opacity-90 transition-opacity">
+                            <img 
+                              src={event.image} 
+                              alt={event.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.style.display = 'none'
+                                const parent = target.parentElement
+                                if (parent) {
+                                  parent.className = `${bgColor} flex items-center justify-center`
+                                  parent.innerHTML = `
+                                    <div class="text-center">
+                                      <div class="text-base sm:text-lg lg:text-xl font-bold ${eventStatus === 'past' ? 'text-red-600 dark:text-red-400' : eventStatus === 'current' ? 'text-green-600 dark:text-green-400' : eventStatus === 'upcoming' ? 'text-blue-600 dark:text-blue-400' : 'text-primary'}">
+                                        ${format(selectedDate, 'd')}
+                                      </div>
+                                      <div class="text-xs text-muted-foreground">
+                                        ${monthNames[selectedDate.getMonth()]}
+                                      </div>
+                                    </div>
+                                  `
+                                }
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-1 left-1 right-1 text-center">
+                              <div className={`text-xs sm:text-sm font-bold text-white drop-shadow-md ${
+                                eventStatus === 'past' ? 'text-red-200' :
+                                eventStatus === 'current' ? 'text-green-200' :
+                                eventStatus === 'upcoming' ? 'text-blue-200' :
+                                'text-white'
                               }`}>
-                                {format(selectedDate, 'd')}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {monthNames[selectedDate.getMonth()]}
+                                {dateRange}
                               </div>
                             </div>
                           </div>
@@ -570,21 +867,45 @@ export function EventsCalendar({ events }: EventsCalendarProps) {
                         bgColor = 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/20'
                       }
                       
+                      const dateRange = formatEventDateRange(event)
+                      const eventDate = new Date(event.date)
+                      
                       return (
                         <Card key={event.id} className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-l-4 ${borderColor} group`}>
                         <div className="flex flex-col sm:flex-row">
-                          <div className={`w-full sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 ${bgColor} flex items-center justify-center group-hover:opacity-80 transition-colors`}>
-                            <div className="text-center">
-                              <div className={`text-base sm:text-lg lg:text-xl font-bold ${
-                                eventStatus === 'past' ? 'text-red-600 dark:text-red-400' :
-                                eventStatus === 'current' ? 'text-green-600 dark:text-green-400' :
-                                eventStatus === 'upcoming' ? 'text-blue-600 dark:text-blue-400' :
-                                'text-primary'
+                          <div className="w-full sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 relative overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/10 dark:to-secondary/10 group-hover:opacity-90 transition-opacity">
+                            <img 
+                              src={event.image} 
+                              alt={event.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.style.display = 'none'
+                                const parent = target.parentElement
+                                if (parent) {
+                                  parent.className = `${bgColor} flex items-center justify-center group-hover:opacity-80 transition-colors`
+                                  parent.innerHTML = `
+                                    <div class="text-center">
+                                      <div class="text-base sm:text-lg lg:text-xl font-bold ${eventStatus === 'past' ? 'text-red-600 dark:text-red-400' : eventStatus === 'current' ? 'text-green-600 dark:text-green-400' : eventStatus === 'upcoming' ? 'text-blue-600 dark:text-blue-400' : 'text-primary'}">
+                                        ${format(eventDate, 'd')}
+                                      </div>
+                                      <div class="text-xs text-muted-foreground">
+                                        ${monthNames[eventDate.getMonth()]}
+                                      </div>
+                                    </div>
+                                  `
+                                }
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-1 left-1 right-1 text-center">
+                              <div className={`text-xs sm:text-sm font-bold text-white drop-shadow-md ${
+                                eventStatus === 'past' ? 'text-red-200' :
+                                eventStatus === 'current' ? 'text-green-200' :
+                                eventStatus === 'upcoming' ? 'text-blue-200' :
+                                'text-white'
                               }`}>
-                                {format(new Date(event.date), 'd')}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {monthNames[new Date(event.date).getMonth()]}
+                                {dateRange}
                               </div>
                             </div>
                           </div>

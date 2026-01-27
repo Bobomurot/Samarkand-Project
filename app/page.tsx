@@ -37,6 +37,7 @@ import { uz } from "date-fns/locale"
 interface Event {
   id: number
   date: string
+  endDate?: string
   name: string
   description: string
   location: string
@@ -74,10 +75,33 @@ export default function SamarkandTravelGuide() {
   // Функция для получения событий текущего месяца
   const getEventsForCurrentMonth = () => {
     const currentDate = new Date()
+    const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    
     return (eventsData as Event[]).filter(event => {
-      const eventDate = new Date(event.date)
-      return isSameMonth(eventDate, currentDate)
+      const eventStart = new Date(event.date)
+      const eventEnd = event.endDate ? new Date(event.endDate) : new Date(event.date)
+      
+      // Check if event overlaps with the month
+      return (eventStart <= monthEnd && eventEnd >= monthStart)
     })
+  }
+
+  // Format event date range
+  const formatEventDateRange = (event: Event): string => {
+    const startDate = new Date(event.date)
+    if (!event.endDate) {
+      return format(startDate, 'd MMMM', { locale: uz })
+    }
+    const endDate = new Date(event.endDate)
+    const startMonth = startDate.getMonth()
+    const endMonth = endDate.getMonth()
+    
+    if (startMonth === endMonth) {
+      return `${format(startDate, 'd', { locale: uz })}-${format(endDate, 'd MMMM', { locale: uz })}`
+    } else {
+      return `${format(startDate, 'd MMMM', { locale: uz })} - ${format(endDate, 'd MMMM', { locale: uz })}`
+    }
   }
 
   const currentMonthEvents = getEventsForCurrentMonth()
@@ -513,26 +537,45 @@ export default function SamarkandTravelGuide() {
                   const day = format(eventDate, 'd')
                   const monthIndex = eventDate.getMonth()
                   const monthName = monthNames[monthIndex]
+                  const dateRange = formatEventDateRange(event)
                   
                   return (
                     <Card 
                       key={event.id}
-                      className="border-2 hover:border-primary/50 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1"
+                      className="border-2 hover:border-primary/50 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1 overflow-hidden group"
                     >
-                      <CardHeader>
-                        <div className="flex items-start gap-4">
-                          <div className={`${index % 2 === 0 ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground' : 'bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground'} rounded-lg p-3 text-center min-w-[60px] shadow-lg`}>
-                            <div className="text-2xl font-bold">{day}</div>
-                            <div className="text-sm">{monthName}</div>
-                          </div>
-                          <div>
-                            <CardTitle className="text-foreground font-bold">{event.name}</CardTitle>
-                            <CardDescription className="text-muted-foreground">{event.location}</CardDescription>
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={event.image} 
+                          alt={event.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.style.display = 'none'
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                        <div className="absolute top-4 right-4">
+                          <div className={`${index % 2 === 0 ? 'bg-primary/90 text-primary-foreground' : 'bg-secondary/90 text-secondary-foreground'} rounded-lg px-3 py-1.5 text-center shadow-lg`}>
+                            <div className="text-lg font-bold">{day}</div>
+                            <div className="text-xs">{monthName}</div>
                           </div>
                         </div>
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="text-white">
+                            <div className="text-xl font-bold mb-1 drop-shadow-md">{event.name}</div>
+                            <div className="text-sm opacity-90 drop-shadow-md">{dateRange}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <CardHeader>
+                        <CardDescription className="flex items-center gap-2 text-muted-foreground">
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-foreground/80">{event.description}</p>
+                        <p className="text-foreground/80 line-clamp-3">{event.description}</p>
                       </CardContent>
                       <CardFooter>
                         <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">Batafsil</Button>
