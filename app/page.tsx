@@ -310,12 +310,11 @@ export default function SamarkandTravelGuide() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-foreground mb-6 drop-shadow-lg">
-            Samarqand: bugun va ertaga  barcha ko‘ngilochar va madaniy tadbirlar, qulay xizmatlar bir joyda
+          <h1 className="text-3xl md:text-6xl font-extrabold text-foreground mb-6 drop-shadow-lg">
+            SAMARQAND BUGUN VA ERTAGA
           </h1>
           <p className="text-xl md:text-2xl font-semibold text-foreground/90 mb-8 drop-shadow-md">
-            Safaringizni osonlashtiring: joylashuvingizni aniqlang, takliflarni oling va yo‘nalishingizni
-            rejalang.
+            Safaringizni osonlashtiring: barcha ko‘ngilochar va madaniy tadbirlar, qulay xizmatlar bir joyda.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl hover:shadow-2xl transition-all duration-300">
@@ -486,7 +485,7 @@ export default function SamarkandTravelGuide() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
               <Bed className="h-8 w-8 text-primary" />
-              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Eng yaxshi mehmonxonalar</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Hotel & Hostel</h2>
             </div>
             <p className="text-lg text-muted-foreground">Samarqanddagi eng qulay va shinam mehmonxonalar</p>
           </div>
