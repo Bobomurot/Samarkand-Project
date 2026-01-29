@@ -161,7 +161,17 @@
         "location": "Samarqand shahri",
         "image": "/events/Silk_Road_Bazaar.jpg",
         "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
-      }
+      },
+      {
+        "id": 19,
+        "date": "2026-02-19",
+        "endDate": "2026-02-25",
+        "name": "Silk Road Dragon",
+        "description": "Join our exclusive community of travelers! Register now to get access to special offers, personalized recommendations, and insider tips for exploring Samarkand. Get notified about upcoming events and receive exclusive discounts on hotels and restaurants.",
+        "location": "Online Registration",
+        "image": "/events/Sharq_taomlari2.png",
+        "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/geo/1520641274/?ll=66.975845%2C39.654484&z=19"
+    }
       
       
       
