@@ -76,25 +76,25 @@
   "restaurants": [
     {
       "id": 1,
-      "name": "Platan Restaurant",
+      "name": "Manresa Restaurant",
       "description": "Премиальный ресторан узбекской кухни с видом на Регистан. Изысканные блюда, приготовленные по старинным рецептам, и элегантная атмосфера.",
       "rating": 5,
       "cuisine": "Узбекская",
       "averageCheck": "от 80 000 сум",
       "features": ["Веранда", "Живая музыка", "VIP-зал", "Вид на Регистан"],
-      "image": "/events/Sharq_taomlari2.png",
+      "image": "/restaurants/manresa.webp",
       "location": "Регистан, Самарканд",
       "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
     },
     {
       "id": 2,
-      "name": "Bibikhanum Teahouse",
+      "name": "Sogdiana Restaurant",
       "description": "Традиционная чайхана рядом с мечетью Биби-Ханым. Аутентичная атмосфера, свежий самоварный чай и традиционные сладости.",
       "rating": 4,
       "cuisine": "Узбекская",
       "averageCheck": "от 30 000 сум",
       "features": ["Традиционная атмосфера", "Самовар", "Терраса"],
-      "image": "/events/Shirinliklar.png",
+      "image": "/restaurants/sogdiana.webp",
       "location": "Биби-Ханым, Самарканд",
       "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
     },
@@ -106,44 +106,8 @@
       "cuisine": "Узбекская",
       "averageCheck": "от 50 000 сум",
       "features": ["Домашняя кухня", "Семейная атмосфера", "Терраса"],
-      "image": "/events/Sharq_taomlari2.png",
+      "image": "/restaurants/karimbek.webp",
       "location": "Центр, Самарканд",
-      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
-    },
-    {
-      "id": 4,
-      "name": "Old City Restaurant",
-      "description": "Ресторан в историческом здании старого города. Европейская и узбекская кухня, изысканные вина и романтическая атмосфера.",
-      "rating": 5,
-      "cuisine": "Европейская, Узбекская",
-      "averageCheck": "от 100 000 сум",
-      "features": ["Историческое здание", "Винная карта", "Романтическая атмосфера"],
-      "image": "/events/Vino_Festival.png",
-      "location": "Старый город, Самарканд",
-      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
-    },
-    {
-      "id": 5,
-      "name": "Somsa House",
-      "description": "Небольшое кафе, специализирующееся на самсах и других традиционных закусках. Свежая выпечка из тандыра, доступные цены.",
-      "rating": 4,
-      "cuisine": "Узбекская",
-      "averageCheck": "от 15 000 сум",
-      "features": ["Тандыр", "Быстрое обслуживание", "Уличная еда"],
-      "image": "/events/Shirinliklar.png",
-      "location": "Центр, Самарканд",
-      "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
-    },
-    {
-      "id": 6,
-      "name": "Silk Road Garden",
-      "description": "Ресторан под открытым небом в саду. Свежие сезонные блюда, барбекю и живая музыка по вечерам. Идеально для ужина на свежем воздухе.",
-      "rating": 5,
-      "cuisine": "Узбекская, Международная",
-      "averageCheck": "от 70 000 сум",
-      "features": ["Сад", "Барбекю", "Живая музыка", "Детская площадка"],
-      "image": "/events/Silk_Road_Bazaar.jpg",
-      "location": "Пригород, Самарканд",
       "location-yandex-map": "https://yandex.uz/maps/10334/samarkand/"
     }
   ]

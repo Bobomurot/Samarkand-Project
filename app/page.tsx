@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -72,6 +75,9 @@ interface Restaurant {
 }
 
 export default function SamarkandTravelGuide() {
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [isEventDialogOpen, setIsEventDialogOpen] = useState(false)
+
   // Функция для получения событий текущего месяца
   const getEventsForCurrentMonth = () => {
     const currentDate = new Date()
@@ -85,6 +91,25 @@ export default function SamarkandTravelGuide() {
       // Check if event overlaps with the month
       return (eventStart <= monthEnd && eventEnd >= monthStart)
     })
+  }
+
+  // Функция для получения ближайших предстоящих событий
+  const getUpcomingEvents = () => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    return (eventsData as Event[])
+      .filter(event => {
+        const eventStart = new Date(event.date)
+        eventStart.setHours(0, 0, 0, 0)
+        // Берем только будущие события
+        return eventStart >= today
+      })
+      .sort((a, b) => {
+        // Сортируем по дате начала
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      })
+      .slice(0, 3) // Берем первые 3 ближайших события
   }
 
   // Format event date range
@@ -105,6 +130,7 @@ export default function SamarkandTravelGuide() {
   }
 
   const currentMonthEvents = getEventsForCurrentMonth()
+  const upcomingEvents = getUpcomingEvents()
   
   const monthNames = [
     "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
@@ -284,8 +310,8 @@ export default function SamarkandTravelGuide() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/60" />
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mb-6 drop-shadow-lg">
-            Samarqanddagi eng zo'r mehmonxonalar va restoranlarni kashf eting!
+          <h1 className="text-3xl md:text-5xl font-extrabold text-foreground mb-6 drop-shadow-lg">
+            Samarqand: bugun va ertaga  barcha ko‘ngilochar va madaniy tadbirlar, qulay xizmatlar bir joyda
           </h1>
           <p className="text-xl md:text-2xl font-semibold text-foreground/90 mb-8 drop-shadow-md">
             Safaringizni osonlashtiring: joylashuvingizni aniqlang, takliflarni oling va yo‘nalishingizni
@@ -356,6 +382,96 @@ export default function SamarkandTravelGuide() {
         </div>
       </section>
 
+      {/* Upcoming Events Section */}
+      {upcomingEvents.length > 0 && (
+        <section className="relative py-20 px-4">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+            style={{ 
+              backgroundImage: "url('/back_images/back.jpg')",
+              backgroundAttachment: "fixed"
+            }}
+          />
+          <div className="absolute inset-0 bg-background/80" />
+          <div className="relative z-10 max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 mb-4">
+                <Calendar className="h-8 w-8 text-primary" />
+                <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">
+                  Yaqinlashib kelayotgan tadbirlar
+                </h2>
+              </div>
+              <p className="text-lg text-muted-foreground">Eng muhim va qiziqarli tadbirlarni kashf eting</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {upcomingEvents.map((event, index) => {
+                const eventDate = new Date(event.date)
+                const day = format(eventDate, 'd')
+                const monthIndex = eventDate.getMonth()
+                const monthName = monthNames[monthIndex]
+                const dateRange = formatEventDateRange(event)
+                
+                return (
+                  <Card 
+                    key={event.id}
+                    className="border-2 hover:border-primary/50 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1 overflow-hidden group"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img 
+                        src={event.image} 
+                        alt={event.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                      <div className="absolute top-4 right-4">
+                        <div className={`${index % 2 === 0 ? 'bg-primary/90 text-primary-foreground' : 'bg-secondary/90 text-secondary-foreground'} rounded-lg px-3 py-1.5 text-center shadow-lg`}>
+                          <div className="text-lg font-bold">{day}</div>
+                          <div className="text-xs">{monthName}</div>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="text-white">
+                          <div className="text-xl font-bold mb-1 drop-shadow-md">{event.name}</div>
+                          <div className="text-sm opacity-90 drop-shadow-md">{dateRange}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <CardHeader>
+                      <CardDescription className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        {event.location}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-foreground/80 line-clamp-3">{event.description}</p>
+                    </CardContent>
+                    <CardFooter>
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="hover:bg-primary hover:text-primary-foreground transition-colors w-full"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setSelectedEvent(event)
+                          setIsEventDialogOpen(true)
+                        }}
+                      >
+                        Batafsil
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Hotels Section */}
       <section className="relative py-20 px-4">
         <div
@@ -411,7 +527,7 @@ export default function SamarkandTravelGuide() {
                   <p className="text-sm text-foreground/80 mb-4 line-clamp-2">{hotel.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {hotel.features.slice(0, 3).map((feature, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs">
+                      <Badge key={idx} variant="secondary" className="text-xs bg-green-500 text-white border-green-500">
                         {feature === "WiFi" && <Wifi className="h-3 w-3 mr-1 inline" />}
                         {feature === "Парковка" && <Car className="h-3 w-3 mr-1 inline" />}
                         {feature === "Завтрак" && <Coffee className="h-3 w-3 mr-1 inline" />}
@@ -419,7 +535,7 @@ export default function SamarkandTravelGuide() {
                       </Badge>
                     ))}
                     {hotel.features.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs border-green-500 text-green-600">
                         +{hotel.features.length - 3}
                       </Badge>
                     )}
@@ -450,16 +566,16 @@ export default function SamarkandTravelGuide() {
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
-              <Utensils className="h-8 w-8 text-secondary" />
-              <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Eng yaxshi restoranlar</h2>
+              <Utensils className="h-8 w-8 text-blue-600" />
+              <h2 className="text-3xl md:text-4xl font-extrabold text-black">Eng yaxshi restoranlar</h2>
             </div>
-            <p className="text-lg text-muted-foreground">Samarqanddagi eng mazali va mashhur restoranlar</p>
+            <p className="text-lg text-black">Samarqanddagi eng mazali va mashhur restoranlar</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(hotelsRestaurantsData.restaurants as Restaurant[]).map((restaurant) => (
               <Card 
                 key={restaurant.id} 
-                className="group overflow-hidden border-2 hover:border-secondary/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1"
+                className="group overflow-hidden border-2 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img 
@@ -468,7 +584,7 @@ export default function SamarkandTravelGuide() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute top-3 right-3">
-                    <Badge className="bg-secondary/90 text-secondary-foreground shadow-lg">
+                    <Badge className="bg-blue-600/90 text-white shadow-lg">
                       {restaurant.cuisine}
                     </Badge>
                   </div>
@@ -492,22 +608,22 @@ export default function SamarkandTravelGuide() {
                   <p className="text-sm text-foreground/80 mb-4 line-clamp-2">{restaurant.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {restaurant.features.slice(0, 3).map((feature, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs">
+                      <Badge key={idx} variant="secondary" className="text-xs bg-green-500 text-white border-green-500">
                         {feature === "Живая музыка" && <Sparkles className="h-3 w-3 mr-1 inline" />}
                         {feature === "Веранда" && <Coffee className="h-3 w-3 mr-1 inline" />}
                         {feature}
                       </Badge>
                     ))}
                     {restaurant.features.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs border-green-500 text-green-600">
                         +{restaurant.features.length - 3}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-lg font-bold text-secondary">{restaurant.averageCheck}</p>
+                  <p className="text-lg font-bold text-blue-600">{restaurant.averageCheck}</p>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-md hover:shadow-lg transition-all duration-300">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-md hover:shadow-lg transition-all duration-300 text-white">
                     Batafsil
                   </Button>
                 </CardFooter>
@@ -578,7 +694,19 @@ export default function SamarkandTravelGuide() {
                         <p className="text-foreground/80 line-clamp-3">{event.description}</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground transition-colors">Batafsil</Button>
+                        <Button 
+                          type="button"
+                          variant="outline" 
+                          className="hover:bg-primary hover:text-primary-foreground transition-colors w-full"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setSelectedEvent(event)
+                            setIsEventDialogOpen(true)
+                          }}
+                        >
+                          Batafsil
+                        </Button>
                       </CardFooter>
                     </Card>
                   )
@@ -775,6 +903,63 @@ export default function SamarkandTravelGuide() {
           <p className="font-medium">Xaritani oldindan yuklab, sayohatingizni davom ettiring!</p>
         </div>
       </section>
+
+      {/* Event Details Dialog */}
+      <Dialog open={isEventDialogOpen} onOpenChange={setIsEventDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          {selectedEvent && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold">
+                  {selectedEvent.name}
+                </DialogTitle>
+                <DialogDescription className="flex items-center gap-2 pt-2">
+                  <Calendar className="h-4 w-4" />
+                  {formatEventDateRange(selectedEvent)}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="relative h-64 overflow-hidden rounded-lg">
+                  <img 
+                    src={selectedEvent.image} 
+                    alt={selectedEvent.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-foreground">Joylashuv</p>
+                      <p className="text-muted-foreground">{selectedEvent.location}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground mb-2">Tavsif</p>
+                    <p className="text-muted-foreground leading-relaxed">{selectedEvent.description}</p>
+                  </div>
+                  {selectedEvent["location-yandex-map"] && (
+                    <div className="pt-2">
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open(selectedEvent["location-yandex-map"], '_blank')}
+                      >
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Xaritada ko'rish
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="py-12 px-4 bg-card border-t-2 border-border">
